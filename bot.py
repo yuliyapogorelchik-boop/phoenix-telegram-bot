@@ -98,3 +98,19 @@ def webhook():
         app.logger.exception("Failed to process Telegram update")
         return "error", 500
     return "ok", 200
+
+def register_webhook():
+    public_url = os.environ.get("RENDER_EXTERNAL_URL", "").rstrip("/")
+    if not public_url:
+        app.logger.warning("RENDER_EXTERNAL_URL is not set")
+        return
+
+    telegram("setWebhook", {
+        "url": f"{public_url}/webhook",
+        "secret_token": WEBHOOK_SECRET,
+        "allowed_updates": ["message", "callback_query"],
+    })
+    app.logger.info("Telegram webhook registered")
+
+
+register_webhook()
