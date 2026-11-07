@@ -47,6 +47,16 @@ def menu(chat_id):
 
 
 def handle_update(update):
+    
+    message = update.get("message")
+    if message and message.get("voice"):
+        chat_id = message["chat"]["id"]
+        voice_id = message["voice"]["file_id"]
+        telegram("sendMessage", {
+            "chat_id": chat_id,
+            "text": f"ID голосового:\n{voice_id}"
+        })
+        return
     message = update.get("message")
     if message and message.get("chat", {}).get("type") == "private":
         if message.get("text", "").startswith(("/start", "/menu")):
